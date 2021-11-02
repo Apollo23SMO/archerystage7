@@ -4,11 +4,12 @@ const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
 var engine, world;
-var canvas,baseimage,playerimage;
+var canvas, baseimage, playerimage;
 var palyer, playerBase, playerArcher;
 var playerArrows = [];
 var numberOfArrows = 10;
 var board1, board2;
+var score = 0;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
@@ -31,7 +32,7 @@ function setup() {
   World.add(world, playerBase);
 
   player = Bodies.rectangle(250, playerBase.position.y - 160, 50, 180, options);
-  World.add(world,player)
+  World.add(world, player)
 
   playerArcher = new PlayerArcher(
     340,
@@ -45,9 +46,9 @@ function setup() {
 }
 
 function draw() {
-  background(backgroundImg );
-  image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
-  image(playerimage,player.position.x,player.position.y,50,180)
+  background(backgroundImg);
+  image(baseimage, playerBase.position.x, playerBase.position.y, 180, 150)
+  image(playerimage, player.position.x, player.position.y, 50, 180)
 
   Engine.update(engine);
 
@@ -61,9 +62,8 @@ function draw() {
       playerArrows[i].display();
 
       //with distance formula
-      d1 = dist(playerArrows[i].body.position.x,playerArrows[i].body.position.y, board1.body.position.x,board1.body.position.y)
-      if(d1<=100)
-      {
+      d1 = dist(playerArrows[i].body.position.x, playerArrows[i].body.position.y, board1.body.position.x, board1.body.position.y)
+      if (d1 <= 100) {
         console.log("collision");
       }
 
@@ -79,10 +79,11 @@ function draw() {
 
       if (board1Collision.collided || board2Collision.collided) {
         console.log("yes");
+        score += 5;
       }
 
       //[optional code to add trajectory of arrow]
-      
+
       // var posX = playerArrows[i].body.position.x;
       // var posY = playerArrows[i].body.position.y;
 
@@ -108,8 +109,16 @@ function draw() {
   textSize(30);
   text("Remaining Arrows : " + numberOfArrows, 200, 100);
 
+  //Score
+  fill("#FFFF");
+  textAlign("center");
+  textSize(30);
+  text("Score:" + score, 600, 100)
+
+
   if (numberOfArrows == 0) {
     console.log("arrow bucket is empty")
+    gameOver();
   }
 }
 
@@ -139,3 +148,15 @@ function keyReleased() {
   }
 }
 
+function gameOver() {
+   swal(
+     { title: `Game Over!!!`,
+      text: "Thanks for playing!!",
+       imageUrl:
+        "https://raw.githubusercontent.com/vishalgaddam873/PiratesInvision/main/assets/board.png",
+         imageSize: "150x150",
+          confirmButtonText: "Play Again" },
+           function (isConfirm) {
+              if (isConfirm) {
+                 location.reload(); } } );
+}
